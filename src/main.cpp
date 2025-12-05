@@ -48,7 +48,7 @@ std::pair<std::string, double> run_timed(Solution* sol, int part, const std::str
     return {out, ms};
 }
 
-PartResult process_part(Solution* sol, int part_num, const std::string& real_input, toml::array* test_cases) {
+PartResult process_part(int day_num, Solution* sol, int part_num, const std::string& real_input, toml::array* test_cases) {
     PartResult res;
     res.has_real = !real_input.empty();
     res.real_val = "";
@@ -82,7 +82,9 @@ PartResult process_part(Solution* sol, int part_num, const std::string& real_inp
             auto [actual, _] = run_timed(sol, part_num, input);
             if (actual != expected) {
                 res.tests_passed = false;
-                std::cerr << "Day " << part_num << " Test Failed. Exp: " << expected << ", Got: " << actual << "\n";
+                std::cerr << "Day " << day_num << " Part " << part_num 
+                          << " Test Failed. Exp: " << expected 
+                          << ", Got: " << actual << "\n";
             }
         }
     }
@@ -124,7 +126,7 @@ void print_row(int day, PartResult r1, PartResult r2) {
     };
 
     std::cout << "║";
-    std::cout << " " << std::setw(2) << std::setfill('0') << day << std::setfill(' ') << "  ║"; 
+    std::cout << " " << std::right << std::setw(2) << std::setfill('0') << day << std::setfill(' ') << "  ║";
 
     std::string c1 = r1.has_real ? "" : GRAY;
     print_cell(r1.real_val, 16, c1);
@@ -158,8 +160,8 @@ int main() {
             test_cases = config["test_cases"].as_array();
         }
 
-        PartResult r1 = process_part(solution_ptr.get(), 1, real_a, test_cases);
-        PartResult r2 = process_part(solution_ptr.get(), 2, real_b, test_cases);
+        PartResult r1 = process_part(day_num, solution_ptr.get(), 1, real_a, test_cases);
+        PartResult r2 = process_part(day_num, solution_ptr.get(), 2, real_b, test_cases);
         
         print_row(day_num, r1, r2);
     }
