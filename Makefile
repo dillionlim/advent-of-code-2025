@@ -42,6 +42,8 @@ endif
 		exit 1; \
 	fi; \
 	mkdir -p "$$target_dir"; \
+	touch "$$target_dir/a.in"; \
+	touch "$$target_dir/b.in"; \
 	printf '#include "aoc.hpp"\n\nstruct Day%s : public Solution {\n    std::string part1(const std::string& input) override {\n        return "todo";\n    }\n\n    std::string part2(const std::string& input) override {\n        return "todo";\n    }\n};\n\nAOC_REGISTER(%s, Day%s)\n' $$day_pad $$day_int $$day_pad > "$$target_dir/solution.cpp"; \
 	printf '[[test_cases]]\npart = 1\nexpected = "123"\ninput = """\nexample\n"""\n' > "$$target_dir/test.toml"; \
 	echo "Created $$target_dir"; 
