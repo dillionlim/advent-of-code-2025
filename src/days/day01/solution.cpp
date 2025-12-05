@@ -37,7 +37,26 @@ struct Day01 : public Solution {
     }
 
     std::string part2(const std::string& input) override {
-        return "todo";
+        std::vector<std::pair<bool, int>> in = parse_input(input); // [L = True / R = False, Number]
+        int curr = 50;
+        int ans = 0;
+
+        auto div = [](int x, int y) {
+            return x / y - (x % y != 0) * ((x < 0) ^ (y < 0));
+        };
+
+        for (const auto &[left, number] : in) {
+            int prev = curr;
+            if (left) {
+                curr -= number;
+                ans += div(prev - 1, 100) - div(curr - 1, 100);
+            } else {
+                curr += number;
+                ans += div(curr, 100) - div(prev, 100);
+            }
+            curr = (curr % 100 + 100) % 100;
+        }
+        return std::to_string(ans);
     }
 };
 

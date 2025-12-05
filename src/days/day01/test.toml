@@ -13,3 +13,19 @@ L99
 R14
 L82
 """
+
+[[test_cases]]
+part = 2
+expected = "6"
+input = """
+L68
+L30
+R48
+L5
+R60
+L55
+L1
+L99
+R14
+L82
+"""
