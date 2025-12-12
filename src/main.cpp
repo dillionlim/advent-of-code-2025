@@ -43,7 +43,10 @@ std::pair<std::string, double> run_timed(Solution* sol, int part, const std::str
     auto end = std::chrono::high_resolution_clock::now();
     
     double ms = std::chrono::duration<double, std::milli>(end - start).count();
-    out.erase(out.find_last_not_of(" \n\r\t") + 1);
+    if (!out.empty()) {
+        auto last = out.find_last_not_of(" \n\r\t");
+        if (last != std::string::npos) out.erase(last + 1);
+    }
     
     return {out, ms};
 }
@@ -93,13 +96,13 @@ PartResult process_part(int day_num, Solution* sol, int part_num, const std::str
 }
 
 void print_header() {
-    std::cout << "╔═════╦══════════════════╦══════════╦════════╦══════════════════╦══════════╦════════╗\n";
-    std::cout << "║ Day ║      Part 1      ║   Time   ║ Result ║      Part 2      ║   Time   ║ Result ║\n";
-    std::cout << "╠═════╬══════════════════╬══════════╬════════╬══════════════════╬══════════╬════════╣\n";
+    std::cout << "╔═════╦══════════════════╦════════════╦════════╦══════════════════╦════════════╦════════╗\n";
+    std::cout << "║ Day ║      Part 1      ║    Time    ║ Result ║      Part 2      ║    Time    ║ Result ║\n";
+    std::cout << "╠═════╬══════════════════╬════════════╬════════╬══════════════════╬════════════╬════════╣\n";
 }
 
 void print_footer() {
-    std::cout << "╚═════╩══════════════════╩══════════╩════════╩══════════════════╩══════════╩════════╝\n";
+    std::cout << "╚═════╩══════════════════╩════════════╩════════╩══════════════════╩════════════╩════════╝\n";
 }
 
 void print_row(int day, PartResult r1, PartResult r2) {
@@ -110,7 +113,7 @@ void print_row(int day, PartResult r1, PartResult r2) {
 
     auto print_check = [](PartResult r) {
         if (!r.tests_exist) {
-             std::cout << "   " << GRAY << "-" << RESET << "    ║"; // No tests
+             std::cout << "   " << GRAY << "-" << RESET << "    ║"; 
         } else if (r.tests_passed) {
              std::cout << "   " << GREEN << "✔" << RESET << "    ║";
         } else {
@@ -121,7 +124,12 @@ void print_row(int day, PartResult r1, PartResult r2) {
     auto format_time = [](PartResult r) {
         if (!r.has_real) return std::string("");
         std::stringstream ss;
-        ss << std::fixed << std::setprecision(3) << r.real_ms << "ms";
+        
+        if (r.real_ms >= 1000.0) {
+            ss << std::fixed << std::setprecision(2) << (r.real_ms / 1000.0) << "s";
+        } else {
+            ss << std::fixed << std::setprecision(3) << r.real_ms << "ms";
+        }
         return ss.str();
     };
 
@@ -130,12 +138,12 @@ void print_row(int day, PartResult r1, PartResult r2) {
 
     std::string c1 = r1.has_real ? "" : GRAY;
     print_cell(r1.real_val, 16, c1);
-    print_cell(format_time(r1), 8, GRAY);
+    print_cell(format_time(r1), 10, GRAY);
     print_check(r1);
 
     std::string c2 = r2.has_real ? "" : GRAY;
     print_cell(r2.real_val, 16, c2);
-    print_cell(format_time(r2), 8, GRAY);
+    print_cell(format_time(r2), 10, GRAY);
     print_check(r2);
     
     std::cout << "\n";
